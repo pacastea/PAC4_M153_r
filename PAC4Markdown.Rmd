@@ -31,7 +31,6 @@ Debéis incluir capturas de pantalla y las instrucciones en R utilizadas para im
 
 El tipo de fichero importado es un fichero de text (.txt) de formato ancho fijo (fixed-width), lo que quiere decir que cada columna contiene un número fijo de posiciones de caracteres que hemos de traducir al importar el documento. Las posiciones que usaremos están indicadas en el apéndice del paper, y a través de la función fwf_positions() designaremos los puntos de inicio, final, y las etiquetas de las columnas (medidas) para asignar a éstas de manera respectiva. Después crearemos el conjunto de datos con la función read_fwf("pathway del archivo", "información de lectura que hemos creado").
 
-
 Implementación de los datos para trabajar con ellos:
 
 ```{r s1}
@@ -47,12 +46,25 @@ col_names = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_d
 )
 BODYDATA <- read_fwf("datos/body.dat.txt", col_positions)
 ```
+![Código de datos](datos/c2.jpg)
+![Lectura de los datos importados](datos/c4.jpg)
+Como podemos ver este método ya nos da las dimensiones de los datos (507 rows, 25 columnas.)
+Si comprobamos la estructura con str(BODYDATA), encontramos que al importar, todas son numéricas.
 
 ```{r s221}
-head(BODYDATA)
-str(BODYDATA)
-
+str(BODYDATA) #Estructura de los datos
 ```
 
 Este conjunto de datos contiene una serie de 25 medidas antropométricas (25 variables) en centímetros de un total de 507 individuos. Estas medidas son planas (entre crestas como las acromiales e ilíacas), de profundidad y diámetro (codo, muñeca, rodilla y tobillo) y de circunferencia (hombro, pecho, cintura, abdomen, muslo, biceps, pantorrilla), además de altura, peso, edad y género. 
 Todas las variables aparecen como numéricas. Las medidas en centímetros, el peso y la altura son variables contínuas, la edad la consideraríamos variable numérica discreta y el género a pesar de estar etiquetado con sistema numérico, es categórico con dos niveles (0 - Mujer, 1 - Hombre).
+
+Comprobamos si hay valores nulos asignando la función de contabilizarlos a una variable, y mostramos la variable. En caso de que hubiera, utilizaríamos la función na.omit(BODYDATA), pero no hay valores nulos así que no hace falta.
+
+```{r s2212}
+contNA <- sum(is.na(BODYDATA))
+contNA
+```
+
+Como tal no hay necesidad previa al estudio de transformar los datos, solo de tener en cuenta que la variable género está representada numéricamente (0 = mujer, 1 = hombre).
+
+
