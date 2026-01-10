@@ -67,4 +67,30 @@ contNA
 
 Como tal no hay necesidad previa al estudio de transformar los datos, solo de tener en cuenta que la variable género está representada numéricamente (0 = mujer, 1 = hombre).
 
+## 2.2 Preguntas "objetivo" (1 punto)
+
+**Plantead un mínimo de cuatro preguntas objetivo que den una idea de la información contenida en el conjunto de datos. El objetivo es obtener información a partir de determinados criterios, según variables o rangos de valores. Podéis vasaros en el tipo de consultas realizadas en la PEC1 y utilizar, en alguno de los casos, la definición de funciones (tal como se trabaja en el LAB3).**
+
+- ¿Qué tan evidente es el dimorfismo sexual en los humanos, a nivel biológico?
+- ¿Qué medidas corporales están más estrechamente relacionadas con el aumento de peso?
+- ¿Se acumula la grasa con algún patrón específico según el sexo del individuo? Es decir, ¿varían igual las medidas corporales en aumentar el peso entre hombres y mujeres, o detectamos algún patrón?
+
+- ¿Son las medidas más alejadas del *core* las menos adecuadas para realizar predicciones biológicas? - ¿Se desechan medidas de muñeca, codo, tobillo y rodilla en modelos de regresión múltiple?
+
+# Sección 3. Análisis exploratorio de los datos (2,5 puntos)
+
+## 3.1 Análisis descriptivo y gráfico (1 punto)
+
+**Realizad un análisis descriptivo de los datos (basado en conceptos del LAB2). Este estudio debe incluir un resumen paramétrico de los datos y diversas representaciones gráficas basadas en critarios determinados según los tipos de variables y el objetivo del estudio. El tipo de gráficos y los criterios quedan a vuestra elección.**
+
+*Resumen paramétrico global*
+Podemos usar la función describe() del paquete psych para obtener 12 parámetros estadísticos de interés, entre ellos la media, la desviación estandar, mediana, cuartiles, valores máximos y mínimos que nos describen para cada variable y nos dan información sobre las magnitudes también tenemos skew y kurtosis con los que podemos estimar la normalidad de la distribución de los datos para cada una. Además podemos volver a comprobar que hay 25 variables y 507 observaciones de cada una, lo que corresponde a 0 valores nulos para este dataset (12.675 datos en total).
+
+```{r s331}
+library(psych)
+describe(BODYDATA)
+```
+
+Aquí podemos observar como difieren medidas planas de sus correspondientes medidas de perímetro, como es el caso de los pares "biacromial"  - "shoulder_girth" y "bitrochanteric" - "hip_girth". La media de la distancia entre las crestas acromiales es de 38.81 centímetros (un valor muy cercano a la media) y con una desviación estándar de aproximadamente 3 centímetros mientras que el correspondiente perímetro de hombros mide el volumen de esta zona y tiene una media de 108.20 y una desviación de 10.37 centímetros.
+
 
