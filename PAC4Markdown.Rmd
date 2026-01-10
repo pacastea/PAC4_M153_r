@@ -31,7 +31,6 @@ Debéis incluir capturas de pantalla y las instrucciones en R utilizadas para im
 
 El tipo de fichero importado es un fichero de text (.txt) de formato ancho fijo (fixed-width), lo que quiere decir que cada columna contiene un número fijo de posiciones de caracteres que hemos de traducir al importar el documento. Las posiciones que usaremos están indicadas en el apéndice del paper, y a través de la función fwf_positions() designaremos los puntos de inicio, final, y las etiquetas de las columnas (medidas) para asignar a éstas de manera respectiva. Después crearemos el conjunto de datos con la función read_fwf("pathway del archivo", "información de lectura que hemos creado").
 
-Posiciones 
 
 Implementación de los datos para trabajar con ellos:
 
@@ -50,7 +49,10 @@ BODYDATA <- read_fwf("datos/body.dat.txt", col_positions)
 ```
 
 ```{r s221}
-dim(BODYDATA)
-
+head(BODYDATA)
+str(BODYDATA)
 
 ```
+
+Este conjunto de datos contiene una serie de 25 medidas antropométricas (25 variables) en centímetros de un total de 507 individuos. Estas medidas son planas (entre crestas como las acromiales e ilíacas), de profundidad y diámetro (codo, muñeca, rodilla y tobillo) y de circunferencia (hombro, pecho, cintura, abdomen, muslo, biceps, pantorrilla), además de altura, peso, edad y género. 
+Todas las variables aparecen como numéricas. Las medidas en centímetros, el peso y la altura son variables contínuas, la edad la consideraríamos variable numérica discreta y el género a pesar de estar etiquetado con sistema numérico, es categórico con dos niveles (0 - Mujer, 1 - Hombre).
