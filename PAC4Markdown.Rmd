@@ -1,0 +1,45 @@
+---
+title: "PEC4"
+author: "Andrea C., Diana S."
+date: "2026-01-10"
+output: html_document
+---
+
+# Sección 1. Contexto y objetivo del estudio. Datos (1 punto)
+**Debéis buscar un conjunto de datos relacionado con la Bioestadística y la Bioinformática, basándoos en los intereses profesionales o las preferencias del grupo.**
+**Especificad la procedencia o el origen de los datos, incluid las referencias correspondientes y justificad por qué habéis elegido estos datos, indicando qué objetivos o preguntas queréis responder.**
+
+Los datos proceden del estudio “Exploring Relationships in Body Dimensions” publicado en el Volúmen 11, número 2 del JSE (Journal of Statistics Education), también conocido cómo el JSDSE (Journal of Statistics and Data Science Education), en 2003 por Grete Heinz y Louis Peterson. Se estudian las proporciones del cuerpo humano a partir de numerosas medidas (abdomen, extremidades, peso, altura). 
+
+Hemos escogido estos datos ya que la muestra es grande, con variables tanto numéricas como categóricas, con la posibilidad de procesar alguna variable para crear rangos y valorar otros enfoques y es un tema para el que podemos formular diversas hipótesis partiendo de diferentes perspectivas - género, edad, peso. No tiene valores nulos, lo que nos beneficia principalmente porque no perdemos datos, y además facilita el procesado de los datos para los apartados más complejos como los modelos de aprendizaje automático y la visualización con shiny.
+
+El objetivo principal es comprobar diferencias biológicas que puedan ser explicadas según el principio de dimorfismo sexual, comparar las tendencias observadas con los patrones de acumulación de grasa asociados al sexo del individuo, qué medidas van más estrechamente relacionadas con el aumento o descenso del peso, encontrar medidas clave que permitan inducir otras a través de modelos de predicción,  y detectar tendencias según la edad.
+
+# Sección 2. Prospección y preparación de los datos. (2 puntos)
+
+## 2.1 Descripción de los datos (1 punto)
+
+**Utilizando R, mostrad y explicad el tipo de fichero que habéis importado y las variables que lo componen. Esta descripción debe incluir (basándose en conceptos del LAB1):**
+
+● Descripción general del conjunto de datos.
+● Tipo y clasificación de las variables (numéricas, categóricas, etc.).
+● Tamaño del conjunto de datos.
+● Detección de valores nulos.
+● Valoración del conjunto de datos (necesidad de transformaciones o presencia de inconsistencias).
+Debéis incluir capturas de pantalla y las instrucciones en R utilizadas para importar y mostrar los datos.
+
+```{r s221}
+library(readr)
+col_positions <- fwf_positions(
+start = c(1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 52, 58, 64, 70, 76, 81, 86, 91, 96, 101, 106,
+111, 116, 122, 128),
+end = c(4, 9, 14, 19, 24, 29, 34, 39, 44, 50, 56, 62, 68, 74, 79, 84, 89, 94, 99, 104, 109,
+114, 120, 126, 128),
+col_names = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_diameter",
+"elbow_diameter", "wrist_diameter", "knee_diameter", "ankle_diameter",
+"shoulder_girth", "chest_girth", "waist_girth", "navel_girth", "hip_girth",
+"thigh_girth", "bicep_girth", "forearm_girth", "knee_girth", "calf_girth",
+"ankle_girth", "wrist_girth", "age", "weight", "height", "gender")
+)
+BODYDATA <- read_fwf("datos/body.dat.txt", col_positions)
+```
