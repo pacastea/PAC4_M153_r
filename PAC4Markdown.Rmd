@@ -15,6 +15,7 @@ Hemos escogido estos datos ya que la muestra es grande, con variables tanto num�
 
 El objetivo principal es comprobar diferencias biológicas que puedan ser explicadas según el principio de dimorfismo sexual, comparar las tendencias observadas con los patrones de acumulación de grasa asociados al sexo del individuo, qué medidas van más estrechamente relacionadas con el aumento o descenso del peso, encontrar medidas clave que permitan inducir otras a través de modelos de predicción,  y detectar tendencias según la edad.
 
+
 # Sección 2. Prospección y preparación de los datos. (2 puntos)
 
 ## 2.1 Descripción de los datos (1 punto)
@@ -28,13 +29,17 @@ El objetivo principal es comprobar diferencias biológicas que puedan ser explic
 ● Valoración del conjunto de datos (necesidad de transformaciones o presencia de inconsistencias).
 Debéis incluir capturas de pantalla y las instrucciones en R utilizadas para importar y mostrar los datos.
 
-```{r s221}
+El tipo de fichero importado es un fichero de text (.txt) de formato ancho fijo (fixed-width), lo que quiere decir que cada columna contiene un número fijo de posiciones de caracteres que hemos de traducir al importar el documento. Las posiciones que usaremos están indicadas en el apéndice del paper, y a través de la función fwf_positions() designaremos los puntos de inicio, final, y las etiquetas de las columnas (medidas) para asignar a éstas de manera respectiva. Después crearemos el conjunto de datos con la función read_fwf("pathway del archivo", "información de lectura que hemos creado").
+
+Posiciones 
+
+Implementación de los datos para trabajar con ellos:
+
+```{r s1}
 library(readr)
 col_positions <- fwf_positions(
-start = c(1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 52, 58, 64, 70, 76, 81, 86, 91, 96, 101, 106,
-111, 116, 122, 128),
-end = c(4, 9, 14, 19, 24, 29, 34, 39, 44, 50, 56, 62, 68, 74, 79, 84, 89, 94, 99, 104, 109,
-114, 120, 126, 128),
+start = c(1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 52, 58, 64, 70, 76, 81, 86, 91, 96, 101, 106, 111, 116, 122, 128),
+end = c(4, 9, 14, 19, 24, 29, 34, 39, 44, 50, 56, 62, 68, 74, 79, 84, 89, 94, 99, 104, 109, 114, 120, 126, 128),
 col_names = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_diameter",
 "elbow_diameter", "wrist_diameter", "knee_diameter", "ankle_diameter",
 "shoulder_girth", "chest_girth", "waist_girth", "navel_girth", "hip_girth",
@@ -42,4 +47,10 @@ col_names = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_d
 "ankle_girth", "wrist_girth", "age", "weight", "height", "gender")
 )
 BODYDATA <- read_fwf("datos/body.dat.txt", col_positions)
+```
+
+```{r s221}
+dim(BODYDATA)
+
+
 ```
