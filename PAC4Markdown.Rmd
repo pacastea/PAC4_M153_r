@@ -370,7 +370,7 @@ Explorar agrupamientos con las variables que tenemos a mano nos hace considerar 
 Partiendo de aquí, podemos utilizar un algoritmo k-means para dividir la muestra en clusters según perfiles corporales, usando medidas representativas tanto del marco óseo como del patrón de acumulación de grasa (girth) para ello, y compararlo con algún gráfico descriptivo realizado en la Sección 3.1 para detectar algún patrón. También podríamos servirnos del aprendizaje supervisado para testar la pregunta número 4 propuesta al inicio de la PAC, usando una stepAIC para detectar qué medidas son las que aportan menos información al modelo.
 
 
-##### k-means
+##### k-means. Aprendizaje no supervisado.
 
 Primero empezaremos con el k-means, y como paso previo al algoritmo haremos elbow-method a través del decrecimiento de la suma de cuadrados intra-cluster (WSS) para determinar una k adecuada, que es el punto en el que la pendiente de reducción del WSS cambia, creando un codo en la gráfica.
 
@@ -445,4 +445,31 @@ Se adjuntan figuras 4 y 5 con marcas para señalar las subdivisiones.
 ![FIGURA 4](datos/c7.jpg)
 
 ![FIGURA 5](datos/c8.jpg)
+
+##### stepAIC. Aprendizaje supervisado.
+
+Esta parte es simplemente para poder descartar o no medidas más alejadas del core con respaldo estadístico. Este método forma parte del aprendizaje supervisado.
+
+```{r stepAIC1}
+variablesaic <- c(
+  "biacromial","biiliac","bitrochanteric",
+  "chest_depth","chest_diameter",
+  "elbow_diameter","wrist_diameter","knee_diameter","ankle_diameter",
+  "shoulder_girth","chest_girth","waist_girth","navel_girth","hip_girth",
+  "thigh_girth","bicep_girth","forearm_girth","knee_girth","calf_girth",
+  "ankle_girth","wrist_girth"
+)
+
+modelfull <- lm(weight ~ ., data = BODYDATA[, c(variablesaic, "weight")])
+
+modelAIC <- step(modelfull, direction = "both", trace = FALSE)
+summary(modelAIC)
+setdiff(variablesaic, names(coef(modelAIC))[-1])
+```
+Por el estadístico F y el p-valor muy inferior al valor crítico podemos determinar que el conjunto de predictores seleccionado es altamente significativo, a pesar de tener un error estandar del 2.69 (aprox.) este es razonable para medidas antropométricas.
+
+Las variables que no mejoran el modelo y se descartaron, muchas son medidas periféricas alejadas del core (ankle, wrist, knee), aunque hay algunas como chest_diameter y bicep_girth que son medidas centrales pero pueden tener mucha variabilidad que no necesariamente se explica por patrones biológicos ni aportan más información a la hora de hacer predicciones. Otra medida, bitrochanteric, que sí se consideró al inicio del estudio como importante fue descartada por no mejorar el modelo.
+
+**Gracias a esto podríamos responder a la pregunta 4 que medidas más periféricas aportan menos información a un modelo de predicción y por lo tanto son descartadas.**
+
 
