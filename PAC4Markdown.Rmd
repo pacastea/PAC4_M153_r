@@ -367,28 +367,71 @@ Con el tipo de datos que tenemos, creemos que conviene hacer un modelo de aprend
 
 Explorar agrupamientos con las variables que tenemos a mano nos hace considerar el conjunto entero de datos para encontrar la mejor combinación de parámetros para hacer predicciones sobre perfiles morfológicos.
 
-Partiendo de aquí, podemos utilizar un algoritmo k-means para dividir la muestra en clusters según perfiles corporales, usando medidas representativas tanto del marco óseo como del patrón de acumulación de grasa (girth) para ello, y compararlo con algún gráfico descriptivo realizado en la Sección 3.1 para detectar algún patrón.
+Partiendo de aquí, podemos utilizar un algoritmo k-means para dividir la muestra en clusters según perfiles corporales, usando medidas representativas tanto del marco óseo como del patrón de acumulación de grasa (girth) para ello, y compararlo con algún gráfico descriptivo realizado en la Sección 3.1 para detectar algún patrón. También podríamos servirnos del aprendizaje supervisado para testar la pregunta número 4 propuesta al inicio de la PAC, usando una stepAIC para detectar qué medidas son las que aportan menos información al modelo.
+
+
+##### k-means
+
+Primero empezaremos con el k-means, y como paso previo al algoritmo haremos elbow-method a través del decrecimiento de la suma de cuadrados intra-cluster (WSS) para determinar una k adecuada, que es el punto en el que la pendiente de reducción del WSS cambia, creando un codo en la gráfica.
+
+Usaremos waist_girth, chest_girth, hip_girth, shoulder_girth y thigh_girth por los motivos expresados anteriormente.
 
 
 ```{r aprendizajenosup}
 library(ggplot2)
 
-# Selección de variables
-vars_cluster <- BODYDATA[, c("waist_girth","chest_girth","hip_girth","shoulder_girth","thigh_girth")]
+#Variables a usar
+varcluster <- BODYDATA[, c("waist_girth","chest_girth","hip_girth","shoulder_girth","thigh_girth")]
 
-# Normalizar datos
-vars_scaled <- scale(vars_cluster)
+#Normalizar los datos
+varescaladas <- scale(varcluster)
 
-# K-means clustering (k=3 por ejemplo)
+#ELBOW METHOD. Partimos de 10 clusters.
+
+WSS <- numeric(10)
+for(k in 1:10){
+  valork <- kmeans(varescaladas, centers = k, nstart = 25)
+  WSS[k] <- valork$tot.withinss #suma total WSS
+}
+
+plot(1:10, WSS, type="b",
+     xlab = "Número de clusters",
+     ylab = "WSS",
+     main = "Elbow method")
+```
+
+La bajada es muy pronunciada hasta el 2, y entre el 2 y el 4 aún vemos una pendiente clara. Esto podría indicarnos que existen dos divisiones evidentes correspondientes a dos agrupaciones de morfologías muy contrarias (cuerpos muy pequeños, y cuerpos muy grandes) y morfologías intermedias que se pueden agrupar dentro de uno o de otro pero que en añadir más divisiones, forman agrupaciones más claras. Haremos el método k-means para 2 y 4 para observar la estructura global (dimorfismo sexual) y una caracterización más detallada de los tipos morfológicos observados en el estudio.
+
+A pesar de entrenar el modelo con varias variables, haremos el plot con waist_girth y hip_girth de manera paralela al estudio descriptivo del inicio del trabajo, para poder compararlo.
+
+```{r 3kmeans1}
+# K-means k=2
 set.seed(123)
-km <- kmeans(vars_scaled, centers = 3, nstart = 25)
+km <- kmeans(vars_scaled, centers = 2, nstart = 25)
 
-# Añadimos la etiqueta al dataset
+#Etiquetamos dataset
 BODYDATA$cluster <- factor(km$cluster)
-
-# Representación gráfica
+#Plot
 ggplot(BODYDATA, aes(x=waist_girth, y=hip_girth, color=cluster)) +
   geom_point(alpha=0.7) +
-  labs(title="Clusters de perfiles corporales",
-       x="Waist Girth", y="Hip Girth") 
+  labs(title="Dimorfismo sexual",
+       x="Perímetro cintura", y="Perímetro cadera")
 ```
+
+Ahora para 4.
+
+```{r 3kmeans2}
+# K-means k=2
+set.seed(123)
+km <- kmeans(vars_scaled, centers = 4, nstart = 25)
+
+#Etiquetamos dataset
+BODYDATA$cluster <- factor(km$cluster)
+#Plot
+ggplot(BODYDATA, aes(x=waist_girth, y=hip_girth, color=cluster)) +
+  geom_point(alpha=0.7) +
+  labs(title="Subdivisiones",
+       x="Perímetro cintura", y="Perímetro cadera")
+```
+
+![Cintura VS Cadera](datos/c6.jpg)
