@@ -357,4 +357,38 @@ Esta diferencia que vemos en la dispersión viene principalmente justificada por
 
 ## Sección 4. Modelos de aprendizaje automático (2.5 puntos)
 
+**Basándoos en los conceptos trabajados en el LAB5 y a partir de vuestro conjunto de datos y de los objetivos del estudio, evaluad qué tipo de modelos conviene realizar aprendizaje supervisado o no supervisado.**
+● **Justificad vuestra elección.**
+● **Mostrad el detalle del estudio realizado.**
+● **Incluid las representaciones gráficas correspondientes (por ejemplo, clústeres, si procede).**
 
+
+Con el tipo de datos que tenemos, creemos que conviene hacer un modelo de aprendizaje automático no supervisado: tenemos muchas variables a través de las cuales se pueden iniciar varias líneas de estudio y escoger una nos hace dejar atrás muchas otras opciones válidas.
+
+Explorar agrupamientos con las variables que tenemos a mano nos hace considerar el conjunto entero de datos para encontrar la mejor combinación de parámetros para hacer predicciones sobre perfiles morfológicos.
+
+Partiendo de aquí, podemos utilizar un algoritmo k-means para dividir la muestra en clusters según perfiles corporales, usando medidas representativas tanto del marco óseo como del patrón de acumulación de grasa (girth) para ello, y compararlo con algún gráfico descriptivo realizado en la Sección 3.1 para detectar algún patrón.
+
+
+```{r aprendizajenosup}
+library(ggplot2)
+
+# Selección de variables
+vars_cluster <- BODYDATA[, c("waist_girth","chest_girth","hip_girth","shoulder_girth","thigh_girth")]
+
+# Normalizar datos
+vars_scaled <- scale(vars_cluster)
+
+# K-means clustering (k=3 por ejemplo)
+set.seed(123)
+km <- kmeans(vars_scaled, centers = 3, nstart = 25)
+
+# Añadimos la etiqueta al dataset
+BODYDATA$cluster <- factor(km$cluster)
+
+# Representación gráfica
+ggplot(BODYDATA, aes(x=waist_girth, y=hip_girth, color=cluster)) +
+  geom_point(alpha=0.7) +
+  labs(title="Clusters de perfiles corporales",
+       x="Waist Girth", y="Hip Girth") 
+```
