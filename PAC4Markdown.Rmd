@@ -91,6 +91,89 @@ library(psych)
 describe(BODYDATA)
 ```
 
-Aquí podemos observar como difieren medidas planas de sus correspondientes medidas de perímetro, como es el caso de los pares "biacromial"  - "shoulder_girth" y "bitrochanteric" - "hip_girth". La media de la distancia entre las crestas acromiales es de 38.81 centímetros (un valor muy cercano a la media) y con una desviación estándar de aproximadamente 3 centímetros mientras que el correspondiente perímetro de hombros mide el volumen de esta zona y tiene una media de 108.20 y una desviación de 10.37 centímetros.
+Aquí podemos observar como difieren medidas planas de sus correspondientes medidas de perímetro, como es el caso de los pares "biacromial"  - "shoulder_girth" y "bitrochanteric" - "hip_girth". 
+La media de la distancia entre las crestas acromiales es de 38.81 centímetros (un valor muy cercano a la mediana/Q2) y con una desviación estándar de aproximadamente 3 centímetros mientras que el correspondiente perímetro de hombros mide el volumen de esta zona y tiene una media de 108.20 y una desviación de 10.37 centímetros.
 
+Medidas de volumen (girth) del core son las desviaciones estandar más grandes de todo el dataset. Perímetro de pecho [93.33 +- 10.03], perímetro de cintura [76.98 +- 11.01] y perímetro de abdomen a la altura del ombligo [85.65 +- 11.01] junto con el peso [69.15 +- 13.35] son las que tienen desviaciones más altas. Conjuntamente, estas son las que presuponemos que son más impactadas por el patrón de acumulación de grasa y por ende, por el peso.
 
+A simple vista puede parecer que el estadístico de media y desviación estandar para el género no tiene sentido pero que nos dé una media de 0.49+-0.50 es un indicador muy bueno de que el estudio es equitativo, es decir, la mitad o casi la mitad de la muestra es hombre (1), la otra mitad mujer (0).
+
+El siguiente estudio descriptivo se hará sobre las variables "waist_girth", "hip_girth", "biacromial" y "weight".
+
+#### HISTOGRAMA. Waist_girth.
+
+Observaremos la distribución del perímetro de cintura a través de la muestra con un histograma.
+
+```{r 3histograma}
+hist(BODYDATA$waist_girth,
+     main = "Distribución del perímetro de cintura",
+     xlab = "perímetro(cm)",
+     ylab = "Observaciones",
+     col = "orange2")
+abline(h = axTicks(2), col = "gray", lty = "dotted")
+```
+
+#### BOXPLOT. Hip_girth en función de género.
+
+Observaremos la distribución del perímetro de cadera en función del género. Esperamos encontrar dimorfismo sexual. Podríamos usar biiliac, pero la acumulación de grasa en esta zona también es un patrón biológico, así que consideramos correcto asumir hip_girth en lugar de biiliac.
+
+```{r 3boxplot}
+boxplot(hip_girth~gender, data = BODYDATA,
+        main = "Perímetro de cadera por género",
+        xlab = "Género",
+        ylab = "Perímetro (cm)",
+        names = c("Mujer", "Hombre"),
+        col = c("pink", "skyblue"))
+```
+Nos encontramos que al asumir a ciegas y sin tener en cuenta la talla de los individuos, que aún así los hombres presentan perímetros mayores de cadera. Como accesorio para el contexto, añadimos un scatterplot del peso en función de la altura, coloreado según el género.
+
+```{r 3scatterplot}
+#Si es 1 (HOMBRE) asocia azul, si no, rosa:
+colores <- ifelse(BODYDATA$gender == "1", "cornflowerblue", "deeppink")
+#Plot
+plot(BODYDATA$weight, BODYDATA$height,
+     xlab = "Peso (kg)",
+     ylab = "Altura (cm)",
+     main = "Relación peso - altura",
+     pch = 19,
+     col = colores)
+legend("topleft",
+       legend = c("Mujer", "Hombre"),
+       col = c("deeppink", "cornflowerblue"),
+       pch = 19,
+       title = "Género",
+       bty = "n")
+```
+
+Y con esto podríamos teorizar que esta diferencia se vea influenciada por la diferencia de tamaños entre los dos géneros. El camino correcto para comprobar esta hipótesis sería hacer un estudio de proporciones con respecto a la cadera y ver si las mujeres presentan una tendencia a mayores caderas que los hombres.
+
+#### BOXPLOT 2: Distancia biacromial en función de género.
+O en otras palabras, la distancia entre las dos crestas de los hombros, es la medida más médica para el marco óseo en lugar de shoulder_girth. Esperamos encontrar dimorfismo sexual, también.
+
+```{r 3boxplot2}
+boxplot(biacromial ~ gender, data = BODYDATA,
+        main = "Distancia biacromial por género",
+        xlab = "Género",
+        ylab  = "Perímetro (cm)",
+        names = c("Mujer", "Hombre"),
+        col = c("pink", "skyblue"))
+```
+
+Comprobamos que existe una diferencia grande entre los marcos óseos de hombres y mujeres para la alta espalda, la media de los hombres estando por encima de los 40 centímetros, y la media de las mujeres por debajo; valores atípicos extendiéndose hasta por encima de los 40 donde se encuentran aún valores normales para hombres.
+
+#### SCATTERPLOT. Waist_girth con hip_girth.
+
+Esto podría mostrarnos asociación morfológica entre ambas y en cómo puede sesgar nuestra asociación de la hip_girth a un género en concreto si lo coloreamos por género.
+
+```{r waisthip}
+colores2 <- ifelse(BODYDATA$gender == 1, "cornflowerblue", "deeppink") 
+plot(BODYDATA$waist_girth, BODYDATA$hip_girth,
+     xlab = "Perímetro de cintura (cm)",
+     ylab = "Perímetro de cadera (cm)",
+     main = "Relación morfológica entre cintura y cadera",
+     pch = 19,
+     col = colores2)
+abline(lm(hip_girth ~ waist_girth, data = BODYDATA), col = "black")
+```
+
+Vemos que en esta muestra hay una cierta agrupación de observaciones femeninas con altos perímetros de cadera a menores perímetros de cintura, situándose por encima de hombres con el mismo perímetro de cintura pero menores de cadera, lo que indicaría que a mismos perímetros de cintura -**70, 80 centímetros**- las mujeres presentan mayor perímetro de cadera que los hombres, lo que podría responder a la acumulación biológica de grasa en esas zonas, o a que parten de una base ósea mayor (distancia bitrocantérica).
