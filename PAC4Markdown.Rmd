@@ -691,4 +691,18 @@ Sí. Para que los hallazgos sobre proporciones corporales sean estadísticamente
 También es importante incorporar un marco teórico previo sobre dimorfismo sexual, patrones biológicos de acumulación de grasa y crecimiento permitiría desarrollar hipótesis más robustas y contextualizadas.
 
 
-dfasdfa
+###### ¿Faltan datos para obtener otro tipo de información como...?
+
+Nos hemos encontrado durante la realización del trabajo que al considerar el IMC, carecemos de información sobre el porcentaje de grasa corporal de los individuos, lo cual ayuda a contextualizar mucho esta medida. El IMC no diferencia de dónde procede el peso del individuo: sea óseo, muscular, contenido de agua o grasa, todo cuenta como peso que se reparte según la altura. Esto lo convierte en un dato ambiguo que no nos sirve para decretar si un individuo tiene sobrepeso o hipertrofia. 
+También nos podría ser útil una medida de densidad ósea, sobre todo para considerarlo a la vez que la edad y como influye sobre el peso de los individuos.
+Por engrosar el contexto de la población, medidas sobre la procedencia racial, actividad física semanal, podrían ayudar no en el estudio de las proporciones, pero sí en el marco biológico de los individuos.
+
+
+###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
+
+Creemos que la conclusión más robusta que hemos sacado de este estudio es que efectivamente en esta muestra existe un dimorfismo sexual y por lo tanto podríamos partir de aquí para hacer estudios en las poblaciones por separado.
+
+##### En otro orden de cuestiones, valorad también el trabajo en grupo y la calidad del informe de análisis de datos generado.
+
+
+
