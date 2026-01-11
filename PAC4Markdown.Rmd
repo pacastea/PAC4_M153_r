@@ -476,7 +476,13 @@ Las variables que no mejoran el modelo y se descartaron, muchas son medidas peri
 
 **Utilizando la herramienta Shiny (basada en los conceptos trabajados en el LAB6), realizad una propuesta de visualización de datos del conjunto de datos trabajado, a partir de unos determinados criterios a vuestra elección.**
 
-Realizamos una aplicación que facilite el explorado interactivo de las relaciones entre distintas medidas corporales. Ésta, permite que el usuario explore los datos haciendo uso de filtros, y realice gráficos seleccionando variables de interés, permitiendo también filtrar los datos por género para detectar patrones de dimorfismo sexual.
+Hemos desarrollado una aplicación sencilla Shiny que permite explorar de manera interactiva las relaciones entre distintas medidas corporales del conjunto de datos que hemos llamado "BODYDATA". La aplicación está dividida en dos pestañas principales, una para el explorador de datos y otra para los gráficos de dispersión con su respectiva regresión lineal.
+
+En la pestaña del explorador, encontramos filtros de tipo slider para las variables de peso, altura, edad y género, además de selectores para visualizar o no las demás variables. La tabla muestra un máximo de 24 filas para facilitar la lectura.
+
+La pestaña de gráficos permite seleccionar dos variables para enfrentarlas en un gráfico de dispersión. Los puntos aparecen coloreados según el sexo (rosa para mujeres y azul para los hombres igual que en el resto de la PEC para mantener la consistencia) y poder detectar patrones de dimorfismo sexual. Aparece también la recta de regresión lineal de las variables seleccionadas permitiendo así interpretar tendencias.
+
+Los filtros aplicados en la primera pestaña también afectan a los gráficos, así podemos comparar subgrupos específicos y analizar cómo varían estas relaciones antropométricas según estos subgrupos.
 
 ```{r appshiny}
 library(shiny)
@@ -539,7 +545,8 @@ ui <- fluidPage(
                ),
                mainPanel(
                  helpText("Nota: Se muestra un máximo de 25 observaciones."),
-                 tableOutput("tabla")
+                 tableOutput("tabla"),
+                 helpText("Fuente de los datos: 'Exploring Relationships in Body Dimensions' por Grete Heinz y Louis J. Peterson de la San José State University.")
                )
              )
           ),
@@ -610,7 +617,14 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
+Vista de la aplicación:
 
+
+![Pestaña 1: Explorador de datos](datos/c9.jpg)
+
+
+
+![Pestaña 2: Gráficos](datos/c10.jpg)
 
 
 
