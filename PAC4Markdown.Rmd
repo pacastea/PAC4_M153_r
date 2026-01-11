@@ -434,4 +434,15 @@ ggplot(BODYDATA, aes(x=waist_girth, y=hip_girth, color=cluster)) +
        x="Perímetro cintura", y="Perímetro cadera")
 ```
 
-![Cintura VS Cadera](datos/c6.jpg)
+Como podemos ver, en el primer clustering encontramos una división que agrupa parte de datos femeninos en el cluster 2 (de mayoría masculina si tenemos en cuenta el gráfico descriptivo de relación morfológica entre cintura y cadera, figura 3.) y parte de los datos masculinos en el cluster 1 (de mayoría femenina). Esto es porque fenotipos de menor tamaño se asocian en el cluster 1 por tendencia y los demás en el 2. 
+
+En añadir la subdivisión (k = 4) podemos ver que se forman 4 grupos que corresponden mucho mejor con la distribución de la figura 3, teniendo en cuenta que cluster 1 y 2 serían de fenotipo femenino, y el cluster 3 y 4 de fenotipo masculino. Los valores atípicos para cada fenotipo se agrupan automáticamente dentro del clúster más cercano y no al que pertenecen realmente ya que el modelo de predicción no tiene tanta precisión como para detectarlos.
+
+Se adjuntan figuras 4 y 5 con marcas para señalar las subdivisiones.
+
+![FIGURA 3](datos/c6.jpg)
+
+![FIGURA 4](datos/c7.jpg)
+
+![FIGURA 5](datos/c8.jpg)
+
