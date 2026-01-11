@@ -177,3 +177,99 @@ abline(lm(hip_girth ~ waist_girth, data = BODYDATA), col = "black")
 ```
 
 Vemos que en esta muestra hay una cierta agrupación de observaciones femeninas con altos perímetros de cadera a menores perímetros de cintura, situándose por encima de hombres con el mismo perímetro de cintura pero menores de cadera, lo que indicaría que a mismos perímetros de cintura -**70, 80 centímetros**- las mujeres presentan mayor perímetro de cadera que los hombres, lo que podría responder a la acumulación biológica de grasa en esas zonas, o a que parten de una base ósea mayor (distancia bitrocantérica).
+
+## 3.2 EJERCICIOS DE INFERENCIA Y SIMULACIÓN (1.5 puntos)
+
+**a) Basándoos en los conceptos trabajados en el LAB3, definid una función en R que realice algún tipo de cálculo de interés en el contexto del conjunto de datos.**
+
+Un parámetro de interés es el IMC; aunque con ello surgen una serie de dudas que comentaremos más adelante. 
+
+Para el contexto de estos datos, aunque no hay NA ni valores 0, agregamos la comprobación básica. Tras eso y teniendo en cuenta que la medida de la altura ya está en centímetros, describimos la función de la siguiente manera:
+
+```{r 3IMC}
+#Función ÍNDICE MASA CORPORAL
+
+calcular_IMC <- function(peso, altura){
+  #Comprobación básica
+  if (any(is.na(peso)) || any(altura <= 0)){
+    stop("Se encuentran valores NA en peso o altura.")
+  }
+  if (any(peso <=0) || any(altura <= 0)){
+    stop("Peso y altura deben ser mayores que 0.")
+  }
+  #Conversión cm a metros
+  altura_m <- altura/100
+  
+  #CÁLCULO
+  IMC <- peso / (altura_m^2)
+}
+BODYDATA$IMC <- calcular_IMC(BODYDATA$weight, BODYDATA$height)
+summary(BODYDATA$IMC)
+```
+**b) Basándoos en los conceptos del LAB4 y la PEC2, plantead un mínimo de tres enunciados que respondan a una cuestión de probabilidad.**
+
+##### 1. ¿Cuál es la probabilidad de que un individuo del conjunto de datos tenga un IMC superior a la media?
+
+Identificamos la media del IM de manera matemática por precisión, aunque tenemos por el summary del apartado anterior que ronda (23.46) y calculamos la proporción de datos por encima de esta media (IMC > media / total = media), correspondiendo al cálculo de la probabilidad empírica. Lo multiplicamos por 100 y redondeamos a dos decimales para obtener un porcentaje regular y obtenemos que:
+
+```{r 3cuestion1}
+media_IMC <- mean(BODYDATA$IMC)
+p1 <- mean(BODYDATA$IMC > media_IMC)
+round((p1*100), digits = 2)
+```
+
+La probabilidad de que un individuo observado presente un IMC superior a la media es del 44.58%.
+
+#### 2. Para estudios de sobrepeso, ¿Cuál es la probabilidad de que un hombre presente un IMC superior a 25? ¿Y una mujer?
+
+```{r 3cuestion2}
+p2_hombres <- mean(BODYDATA$IMC[BODYDATA$gender == 1] > 25)
+
+p2_mujeres <- mean(BODYDATA$IMC[BODYDATA$gender == 0] > 25)
+
+cat(
+  "Probabilidad de IMC superior a 25:\n",
+  "Hombres:", round((p2_hombres*100), digits = 2), "%\n",
+  "Mujeres:", round((p2_mujeres*100), digits = 2), "%\n"
+)
+```
+
+En hombres es del 42.51%, en mujeres del 17.31%
+
+Para añadir robustez, podemos calcular un intervalo de confianza. Partiendo de un modelo binomial y sabiendo que las observaciones son independientes y la probabilidad en un inicio no está condicionada, podemos hacerlo con la función prop.test() o test de Wilson.
+
+```{r 3cuestion2wilson}
+#HOMBRES
+IMCH <- BODYDATA$IMC[BODYDATA$gender == 1] #Vector filtrado IMC hombres
+NH <- length(IMCH)   #tamaño muestral
+XH <- sum(IMCH > 25) #cuántos hombres con imc > 25
+
+hombres95 <- prop.test(XH, NH, conf.level = 0.95)$conf.int #Devuelve el intervalo
+#PROP. MUESTRAL
+PMhombres <- XH/NH
+
+#MUJERES
+IMCM <- BODYDATA$IMC[BODYDATA$gender == 0] #Vector filtrado IMC mujeres
+NM <- length(IMCM)   #tamaño muestral
+XM <- sum(IMCM > 25) #cuántas mujeres con imc > 25
+
+mujeres95 <- prop.test(XM, NM, conf.level = 0.95)$conf.int #Devuelve el intervalo
+#PROP. MUESTRAL
+PMmujeres <- XM/NM
+
+#Respuesta
+intervalos95 <- sprintf(
+  paste(
+    "Probabilidad de presentar un IMC superior a 25:",
+    "\nHombres: %1.f%% (IC95%%: %.1f-%.1f%%)",
+    "\nMujeres: %1.f%% (IC95%%: %.1f-%.1f%%)"
+  ),
+  PMhombres * 100, hombres95[1] * 100, hombres95[2] * 100,
+  PMmujeres * 100, mujeres95[1] * 100, mujeres95[2] * 100
+)
+
+cat(intervalos95)
+```
+
+
+
