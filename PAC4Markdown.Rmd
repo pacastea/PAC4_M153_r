@@ -472,4 +472,146 @@ Las variables que no mejoran el modelo y se descartaron, muchas son medidas peri
 
 **Gracias a esto podríamos responder a la pregunta 4 que medidas más periféricas aportan menos información a un modelo de predicción y por lo tanto son descartadas.**
 
+## Sección 5. Visualización (1,5 puntos)
+
+**Utilizando la herramienta Shiny (basada en los conceptos trabajados en el LAB6), realizad una propuesta de visualización de datos del conjunto de datos trabajado, a partir de unos determinados criterios a vuestra elección.**
+
+Realizamos una aplicación que facilite el explorado interactivo de las relaciones entre distintas medidas corporales. Ésta, permite que el usuario explore los datos haciendo uso de filtros, y realice gráficos seleccionando variables de interés, permitiendo también filtrar los datos por género para detectar patrones de dimorfismo sexual.
+
+```{r appshiny}
+library(shiny)
+library(shinythemes)
+
+#UI
+
+ui <- fluidPage(
+  theme = shinytheme("journal"),
+  titlePanel("Explorador Body Dimensions"),
+  
+  tabsetPanel(
+    #Pestaña 1: Explorador
+    tabPanel("Explorador de datos",
+             
+             sidebarLayout(
+               sidebarPanel(
+                 #Género
+                 checkboxGroupInput(
+                   "tablagenero",
+                   "Filtro por género",
+                   choices = c("Hombres" = 1, "Mujeres" = 0),
+                   selected = c(1, 0)
+                 ),
+                 
+                 #Peso
+                 sliderInput(
+                   "tablapeso",
+                   "Rango de peso (en kg)",
+                   min = min(BODYDATA$weight, na.rm = TRUE),
+                   max = max(BODYDATA$weight, na.rm = TRUE),
+                   value = c(min(BODYDATA$weight, na.rm = TRUE), max(BODYDATA$weight, na.rm = TRUE))
+                 ),
+                 
+                 #Edad
+                 sliderInput(
+                   "tablaedad",
+                   "Rango de edad",
+                   min = min(BODYDATA$age, na.rm = TRUE),
+                   max = max(BODYDATA$age, na.rm = TRUE),
+                   value = c(min(BODYDATA$age, na.rm = TRUE), max(BODYDATA$age, na.rm = TRUE))
+                 ),
+                 
+                 #Altura
+                 sliderInput(
+                   "tablaaltura",
+                   "Rango de altura (en cm)",
+                   min = min(BODYDATA$height, na.rm = TRUE),
+                   max = max(BODYDATA$height, na.rm = TRUE),
+                   value = c(min(BODYDATA$height, na.rm = TRUE), max(BODYDATA$height, na.rm = TRUE))
+                 ),
+                 
+                 #Selector de columnas
+                 checkboxGroupInput(
+                   "columnas",
+                   "Filtro de variables:",
+                   choices = names(BODYDATA), #Todas las variables
+                   selected = names(BODYDATA) #Seleccionadas por defecto
+                 )
+               ),
+               mainPanel(
+                 helpText("Nota: Se muestra un máximo de 25 observaciones."),
+                 tableOutput("tabla")
+               )
+             )
+          ),
+    
+    #Pestaña 2: Gráficos
+    tabPanel("Gráficos",
+             h3("Seleccione las variables"),
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput("xvar", "Variable X", choices = names(BODYDATA), selected = "biacromial"),
+                 selectInput("yvar", "Variable Y:", choices = names(BODYDATA), selected = "weight")
+               ),
+               mainPanel(
+                 plotOutput("scatterplot"),
+                 verbatimTextOutput("reg_info") #Recta de regresión
+               )
+             )
+    )
+    
+  )
+)
+
+server <- function(input, output) {
+  
+  datos_filtrados <- reactive ({
+    BODYDATA[
+      BODYDATA$gender %in% input$tablagenero &
+      BODYDATA$weight >= input$tablapeso[1] & BODYDATA$weight <= input$tablapeso[2] &
+      BODYDATA$age >= input$tablaedad[1] & BODYDATA$age <= input$tablaedad[2] &
+      BODYDATA$height >= input$tablaaltura[1] & BODYDATA$height <= input$tablaaltura[2],
+    ]
+  })
+  
+  output$tabla <- renderTable({
+    head(datos_filtrados()[, input$columnas, drop = FALSE], 25)
+  })
+  
+  output$scatterplot <- renderPlot({
+    #Datos a usar
+    datos <- datos_filtrados()
+    x <- datos[[input$xvar]]
+    y <- datos[[input$yvar]]
+    #Colores gráfico
+    grafcolores <- ifelse(datos$gender == 1, "cornflowerblue", "pink")
+    #Modelo de regresión lineal:
+    modeloreglin <- lm(y ~ x)
+    #Hacemos el plot:
+    plot(x, y,
+         xlab = input$xvar,
+         ylab = input$yvar,
+         main = paste("Regresión lineal de las variables", input$yvar, "VS", input$xvar),
+         pch = 19,
+         col = grafcolores)
+    #RECTA REGRESIÓN
+    abline(modeloreglin, col = "black", lwd = 2)
+  })
+  output$reg_info <- renderPrint({
+    datos <- datos_filtrados()
+    x <- datos[[input$xvar]]
+    y <- datos[[input$yvar]]
+    modeloreglin <- lm(y ~ x)
+    coefss <- coef(modeloreglin)
+    cat("Recta de regresión:\n")
+    cat(paste0("y = ", round(coefss[1], 2), " + ", round(coefss[2], 2), " * x\n"))
+    summary(modeloreglin)
+  })
+}
+shinyApp(ui = ui, server = server)
+```
+
+
+
+
+
 
