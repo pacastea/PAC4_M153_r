@@ -220,7 +220,7 @@ round((p1*100), digits = 2)
 
 La probabilidad de que un individuo observado presente un IMC superior a la media es del 44.58%.
 
-#### 2. Para estudios de sobrepeso, ¿Cuál es la probabilidad de que un hombre presente un IMC superior a 25? ¿Y una mujer?
+##### 2. Para estudios de sobrepeso, ¿Cuál es la probabilidad de que un hombre presente un IMC superior a 25? ¿Y una mujer?
 
 ```{r 3cuestion2}
 p2_hombres <- mean(BODYDATA$IMC[BODYDATA$gender == 1] > 25)
@@ -270,6 +270,91 @@ intervalos95 <- sprintf(
 
 cat(intervalos95)
 ```
+Como podemos ver con el estudio de la muestra, el 43% de los hombres y el 17% de las mujeres presentan un IMC superior a 25. 
+Bajo el modelo binomial considerado, la probabilidad poblacional de presentar un IMC mayor a 25 se situaría entonces entre el 36.3 - 48.9% en hombres y 13.0 - 22.6% en mujeres con un 95% de confianza.
 
+Aunque es importante apuntar que tener un IMC alto no equivale necesariamente a sobrepeso, dado que cuanto tratamos el peso del individuo no estamos distinguiendo entre masa muscular o grasa, por lo que no podemos discriminar entre personas con sobrepeso real o de elevada masa muscular; lo que sí podemos afirmar es que existe IMC más alto en hombres que en mujeres y que usamos el IMC como clasificación antropométrica y no diagnóstica.
+
+Medidas como plicometrías o bioimpedancias (Básculas que miden el porcentaje de grasa corporal) contextualizarían este marco de estudio, o en su falta, hacer un estudio de correlación entre el IMC y la circunferencia de cintura, siendo este último un indicador de la grasa abdominal.
+
+##### 3. ¿Cuál es la probabilidad de que un hombre mida más de 185 cm, asumiendo que la altura sigue aproximadamente una distribución normal?
+
+Aproximamos a la normal a partir de la estadística descriptiva del apartado 3.1 donde obtenemos que la media es de 171.1 cm (recortada 170.93 cm) y la mediana 170.3, lo que indica una simetría alrededor de la media. La desviación estándar de 9.41 cm y la desviación absoluta mediana de 10.67 cm muestran una dispersión moderada con un rango que va desde los 147.2 a los 198.1 centímetros de altura. 
+La distribución de los datos presenta una asimetría leve (skew de 0.15) y un aplanamiento de la curva respecto a la normal existente pero moderado (kurtosis -0.46), lo que respalda la simetría de la curva y sus colas.
+
+```{r 3normal}
+alturahombres <- BODYDATA$height[BODYDATA$gender == 1] #Filtramos hombres
+muhombres <- mean(alturahombres)
+sdhombres <- sd(alturahombres)
+
+#Calculo probabilidad teorica -> P(X<185) y lo restamos a 1
+pteorica <- 1 - pnorm(185, mean = muhombres, sd = sdhombres)
+probteorica <- pteorica * 100
+
+#Calculo probabilidad observada (media alturas > 185)
+pobs <- mean(alturahombres > 185)
+pobservada <- pobs * 100
+
+resultadonormal <- sprintf(
+  "La probabilidad teórica es de %1.f%%, y la probabilidad observada de %.1f%%",
+  probteorica,
+  pobservada
+)
+cat(resultadonormal)
+```
+Obtenemos bajo los supuestos de normalidad que la probabilidad teórica de que un hombre mida más de 1.85m es de 16%. En el estudio, se da una probabilidad empírica del 17%. Es una diferencia de 1 punto lo que nos indica coherencia y buena aproximación.
+
+**c) Incluid un mínimo de un enunciado que corresponda a un breve modelo de simulación. Si vuestro conjunto de datos no facilita este tipo de enunciados, podéis generar una o varias distribuciones basándoos en parámetros determinados definidos por vosotros, afines al contexto del estudio.**
+
+Podemos utilizar un modelo de regresión lineal múltiple para obtener coeficientes de relación entre las medidas que consideramos más significativas (girth de waist, chest y hip) y el peso, y luego utilizarlos en la simulación normal para el peso.
+Para encontrar la variabilidad real (desviación estandar) para la simulación, extraemos los residuos del mismo modelo.
+
+```{r 3coeficientes}
+#Preparamos
+set.seed(777)
+n <- 2000
+
+#Valores simulados para cada variable
+waist <- rnorm(n, mean(BODYDATA$waist_girth), sd(BODYDATA$waist_girth))
+chest <- rnorm(n, mean(BODYDATA$chest_girth), sd(BODYDATA$chest_girth))
+hip <- rnorm(n, mean(BODYDATA$hip_girth), sd(BODYDATA$hip_girth))
+
+#Regresión múltiple (REAL)
+rlmult <- lm(weight ~ waist_girth + chest_girth + hip_girth, data = BODYDATA)
+
+#Coeficientes
+coef_mult <- coef(rlmult)
+
+#Desviación estandar del modelo
+residusmult <- residuals(rlmult)
+sdmult <- sd(residusmult)
+
+#Simulación (contribución de cada factor al weight)
+weightSIM <- coef_mult["(Intercept)"] +
+  coef_mult["waist_girth"]*waist +
+  coef_mult["chest_girth"]*chest +
+  coef_mult["hip_girth"]*hip +
+  rnorm(n, 0, sdmult)
+
+summary(weightSIM)
+```
+
+Vamos a hacer una comparativa visual entre los datos reales y la simulación.
+
+
+```{r 3comparativaplot}
+simulacionplot <- data.frame(
+  weight = c(BODYDATA$weight, weightSIM),
+  datos = rep(c("Muestra", "Simulación"), c(nrow(BODYDATA), length(weightSIM)))
+)
+boxplot(weight ~ datos, data = simulacionplot,
+        main = "Comparación de peso: Muestra VS Simulación",
+        ylab = "Peso (kg)",
+        col = c("lavender", "darkseagreen"))
+```
+
+Esta diferencia que vemos en la dispersión viene principalmente justificada porque la simulación es más grande que la propia muestra, hemos forzado una distribución completamente normal de los datos y centrada en la media, haciendo que los datos simulados se presenten de forma más simetrica y concentrada que la real.
+
+## Sección 4. Modelos de aprendizaje automático (2.5 puntos)
 
 
