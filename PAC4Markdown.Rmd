@@ -13,7 +13,7 @@ Los datos proceden del estudio “Exploring Relationships in Body Dimensions” 
 
 Hemos escogido estos datos ya que la muestra es grande, con variables tanto numéricas como categóricas, con la posibilidad de procesar alguna variable para crear rangos y valorar otros enfoques y es un tema para el que podemos formular diversas hipótesis partiendo de diferentes perspectivas - género, edad, peso. No tiene valores nulos, lo que nos beneficia principalmente porque no perdemos datos, y además facilita el procesado de los datos para los apartados más complejos como los modelos de aprendizaje automático y la visualización con shiny.
 
-El objetivo principal es comprobar diferencias biológicas que puedan ser explicadas según el principio de dimorfismo sexual, comparar las tendencias observadas con los patrones de acumulación de grasa asociados al sexo del individuo, qué medidas van más estrechamente relacionadas con el aumento o descenso del peso, encontrar medidas clave que permitan inducir otras a través de modelos de predicción,  y detectar tendencias según la edad.
+El objetivo principal es comprobar diferencias biológicas que puedan ser explicadas según el principio de dimorfismo sexual, comparar las tendencias observadas con los patrones de acumulación de grasa asociados al sexo del individuo, qué medidas van más estrechamente relacionadas con el aumento o descenso del peso, encontrar medidas clave que permitan inducir otras a través de modelos de predicción y detectar tendencias según la edad.
 
 
 # Sección 2. Prospección y preparación de los datos. (2 puntos)
@@ -69,7 +69,7 @@ Como tal no hay necesidad previa al estudio de transformar los datos, solo de te
 
 ## 2.2 Preguntas "objetivo" (1 punto)
 
-**Plantead un mínimo de cuatro preguntas objetivo que den una idea de la información contenida en el conjunto de datos. El objetivo es obtener información a partir de determinados criterios, según variables o rangos de valores. Podéis vasaros en el tipo de consultas realizadas en la PEC1 y utilizar, en alguno de los casos, la definición de funciones (tal como se trabaja en el LAB3).**
+**Plantead un mínimo de cuatro preguntas objetivo que den una idea de la información contenida en el conjunto de datos. El objetivo es obtener información a partir de determinados criterios, según variables o rangos de valores. Podéis basaros en el tipo de consultas realizadas en la PEC1 y utilizar, en alguno de los casos, la definición de funciones (tal como se trabaja en el LAB3).**
 
 - ¿Qué tan evidente es el dimorfismo sexual en los humanos, a nivel biológico?
 - ¿Qué medidas corporales están más estrechamente relacionadas con el aumento de peso?
@@ -81,13 +81,17 @@ Como tal no hay necesidad previa al estudio de transformar los datos, solo de te
 
 ## 3.1 Análisis descriptivo y gráfico (1 punto)
 
-**Realizad un análisis descriptivo de los datos (basado en conceptos del LAB2). Este estudio debe incluir un resumen paramétrico de los datos y diversas representaciones gráficas basadas en critarios determinados según los tipos de variables y el objetivo del estudio. El tipo de gráficos y los criterios quedan a vuestra elección.**
+**Realizad un análisis descriptivo de los datos (basado en conceptos del LAB2). Este estudio debe incluir un resumen paramétrico de los datos y diversas representaciones gráficas basadas en criterios determinados según los tipos de variables y el objetivo del estudio. El tipo de gráficos y los criterios quedan a vuestra elección.**
 
 *Resumen paramétrico global*
-Podemos usar la función describe() del paquete psych para obtener 12 parámetros estadísticos de interés, entre ellos la media, la desviación estandar, mediana, cuartiles, valores máximos y mínimos que nos describen para cada variable y nos dan información sobre las magnitudes también tenemos skew y kurtosis con los que podemos estimar la normalidad de la distribución de los datos para cada una. Además podemos volver a comprobar que hay 25 variables y 507 observaciones de cada una, lo que corresponde a 0 valores nulos para este dataset (12.675 datos en total).
+Podemos usar la función describe() del paquete psych para obtener 12 parámetros estadísticos de interés, entre ellos la media, la desviación estandar, mediana, cuartiles, valores máximos y mínimos que nos describen para cada variable y nos dan información sobre las magnitudes. También tenemos skew y kurtosis con los que podemos estimar la normalidad de la distribución de los datos para cada una. Además podemos volver a comprobar que hay 25 variables y 507 observaciones de cada una, lo que corresponde a 0 valores nulos para este dataset (12.675 datos en total).
 
 ```{r s331}
-library(psych)
+if (!require(psych)) {
+  install.packages("psych")
+  library(psych)
+}
+
 describe(BODYDATA)
 ```
 
@@ -113,6 +117,8 @@ hist(BODYDATA$waist_girth,
 abline(h = axTicks(2), col = "gray", lty = "dotted")
 ```
 
+El histograma del perímetro de cintura muestra una distribución unimodal. La mayoría de los individuos presentan valores comprendidos entre aproximadamente 65 y 80 cm, mientras que los valores más elevados aparecen con menor frecuencia y generan una cola hacia la derecha, lo que indica que la mayoría de la muestra se concentra en valores medios, con un menor número de individuos con perímetros elevados.
+
 #### BOXPLOT. Hip_girth en función de género.
 
 Observaremos la distribución del perímetro de cadera en función del género. Esperamos encontrar dimorfismo sexual. Podríamos usar biiliac, pero la acumulación de grasa en esta zona también es un patrón biológico, así que consideramos correcto asumir hip_girth en lugar de biiliac.
@@ -125,7 +131,7 @@ boxplot(hip_girth~gender, data = BODYDATA,
         names = c("Mujer", "Hombre"),
         col = c("pink", "skyblue"))
 ```
-Nos encontramos que al asumir a ciegas y sin tener en cuenta la talla de los individuos, que aún así los hombres presentan perímetros mayores de cadera. Como accesorio para el contexto, añadimos un scatterplot del peso en función de la altura, coloreado según el género.
+Nos encontramos que al asumir a ciegas y sin tener en cuenta la talla de los individuos, los hombres presentan perímetros mayores de cadera. Como accesorio para el contexto, añadimos un scatterplot del peso en función de la altura, coloreado según el género.
 
 ```{r 3scatterplot}
 #Si es 1 (HOMBRE) asocia azul, si no, rosa:
@@ -159,7 +165,7 @@ boxplot(biacromial ~ gender, data = BODYDATA,
         col = c("pink", "skyblue"))
 ```
 
-Comprobamos que existe una diferencia grande entre los marcos óseos de hombres y mujeres para la alta espalda, la media de los hombres estando por encima de los 40 centímetros, y la media de las mujeres por debajo; valores atípicos extendiéndose hasta por encima de los 40 donde se encuentran aún valores normales para hombres.
+Comprobamos que existe una diferencia grande entre los marcos óseos de hombres y mujeres para la alta espalda, la media de los hombres estando por encima de los 40 centímetros, y la media de las mujeres por debajo; valores atípicosde mujeres extendiéndose hasta por encima de los 40 donde se encuentran aún valores normales para hombres.
 
 #### SCATTERPLOT. Waist_girth con hip_girth.
 
@@ -206,6 +212,18 @@ calcular_IMC <- function(peso, altura){
 BODYDATA$IMC <- calcular_IMC(BODYDATA$weight, BODYDATA$height)
 summary(BODYDATA$IMC)
 ```
+El resumen del IMC muestra una media de 23.46 y una mediana ligeramente inferior (23.16), lo que indica una distribución con ligera asimetría positiva. El primer y tercer cuartil (20.96 y 25.47) sitúan a la mayor parte de la muestra en valores considerados normales según clasificaciones estándar, aunque aproximadamente un 25% de los individuos se sitúa en valores compatibles con sobrepeso (IMC ≥ 25).
+
+```{r}
+hist(BODYDATA$IMC,
+     main = "Distribución del IMC",
+     xlab = "IMC",
+     col = "lightgray")
+abline(v = 25, col = "red", lty = 2)
+
+```
+La línea discontínua marca el umbral clásico del sobrepeso
+
 **b) Basándoos en los conceptos del LAB4 y la PEC2, plantead un mínimo de tres enunciados que respondan a una cuestión de probabilidad.**
 
 ##### 1. ¿Cuál es la probabilidad de que un individuo del conjunto de datos tenga un IMC superior a la media?
@@ -273,7 +291,7 @@ cat(intervalos95)
 Como podemos ver con el estudio de la muestra, el 43% de los hombres y el 17% de las mujeres presentan un IMC superior a 25. 
 Bajo el modelo binomial considerado, la probabilidad poblacional de presentar un IMC mayor a 25 se situaría entonces entre el 36.3 - 48.9% en hombres y 13.0 - 22.6% en mujeres con un 95% de confianza.
 
-Aunque es importante apuntar que tener un IMC alto no equivale necesariamente a sobrepeso, dado que cuanto tratamos el peso del individuo no estamos distinguiendo entre masa muscular o grasa, por lo que no podemos discriminar entre personas con sobrepeso real o de elevada masa muscular; lo que sí podemos afirmar es que existe IMC más alto en hombres que en mujeres y que usamos el IMC como clasificación antropométrica y no diagnóstica.
+Aunque es importante apuntar que tener un IMC alto no equivale necesariamente a sobrepeso, dado que cuando tratamos el peso del individuo no estamos distinguiendo entre masa muscular o grasa, por lo que no podemos discriminar entre personas con sobrepeso real o de elevada masa muscular; lo que sí podemos afirmar es que existe IMC más alto en hombres que en mujeres y que usamos el IMC como clasificación antropométrica y no diagnóstica.
 
 Medidas como plicometrías o bioimpedancias (Básculas que miden el porcentaje de grasa corporal) contextualizarían este marco de estudio, o en su falta, hacer un estudio de correlación entre el IMC y la circunferencia de cintura, siendo este último un indicador de la grasa abdominal.
 
@@ -338,6 +356,7 @@ weightSIM <- coef_mult["(Intercept)"] +
 
 summary(weightSIM)
 ```
+El resumen del peso simulado muestra valores centrales muy próximos a los observados en la muestra real, con una media y mediana cercanas a los 69 kg. Esto indica que el modelo de regresión múltiple capta adecuadamente la relación entre el peso y las medidas centrales seleccionadas. La menor dispersión observada en la simulación se explica por la asunción de normalidad y por el uso de un número reducido de predictores, lo que suaviza los valores extremos presentes en los datos reales.
 
 Vamos a hacer una comparativa visual entre los datos reales y la simulación.
 
@@ -407,7 +426,7 @@ A pesar de entrenar el modelo con varias variables, haremos el plot con waist_gi
 ```{r 3kmeans1}
 # K-means k=2
 set.seed(123)
-km <- kmeans(vars_scaled, centers = 2, nstart = 25)
+km <- kmeans(varescaladas, centers = 2, nstart = 25)
 
 #Etiquetamos dataset
 BODYDATA$cluster <- factor(km$cluster)
@@ -423,7 +442,7 @@ Ahora para 4.
 ```{r 3kmeans2}
 # K-means k=2
 set.seed(123)
-km <- kmeans(vars_scaled, centers = 4, nstart = 25)
+km <- kmeans(varescaladas, centers = 4, nstart = 25)
 
 #Etiquetamos dataset
 BODYDATA$cluster <- factor(km$cluster)
@@ -684,11 +703,28 @@ Esto podemos verlo en las figuras 3, 5 y 10, y en cómo podemos encontrar estos 
 
 Gracias al stepAIC pudimos encontrar qué variables no mejoraban el modelo, y estas corresponden en su gran mayoría a medidas periféricas alejadas del core (tobillo, muñeca y rodilla) y algunas otras más céntricas como bicep (que todavía corresponde a extremidades), lo que se ajusta a nuestra presuposición.
 
+###### Sobre el modelo de simulación.
+La simulación del peso basada en un modelo de regresión múltiple utilizando circunferencia de cintura, pecho y cadera genera valores plausibles y coherentes con la muestra real. La media y la mediana del peso simulado son muy próximas a las observadas en los datos originales, lo que indica que el modelo captura adecuadamente la relación central entre estas medidas y el peso corporal. La menor dispersión observada en la simulación se explica por la asunción de normalidad y por el uso de un conjunto reducido de predictores, lo que suaviza la presencia de valores extremos.
+
+###### Sobre el análisis de clústeres.
+El análisis mediante k-means revela agrupamientos morfológicos coherentes cuando se utilizan medidas centrales del cuerpo previamente escaladas. La elección de k=2 permite identificar dos grandes grupos compatibles con dimorfismo sexual, mientras que k=4 ofrece una caracterización más detallada de subtipos corporales dentro de cada sexo. Estos resultados refuerzan la idea de que las medidas del core corporal son determinantes en la diferenciación de perfiles antropométricos.
+
+###### Alcance y limitaciones del estudio.
+Aunque los resultados obtenidos son consistentes con patrones biológicos conocidos, deben interpretarse con cautela. El uso de técnicas no supervisadas como k-means permite identificar agrupamientos, pero no establece relaciones causales. Asimismo, la ausencia de medidas directas de composición corporal limita la interpretación del peso y del IMC en términos de grasa corporal frente a masa muscular
+
+En conjunto, este estudio demuestra cómo la combinación de análisis exploratorio, inferencia básica, simulación y aprendizaje automático permite extraer información relevante de datos antropométricos y formular hipótesis coherentes sobre patrones corporales y dimorfismo sexual.
+
 ###### ¿Sería necesario realizar un análisis más avanzado?
 
 Sí. Para que los hallazgos sobre proporciones corporales sean estadísticamente significativos deberían explorarse todas las relaciones posibles entre las medidas recogidas en BODYDATA, no sólo los valores individuales o algunos pares. Esto incluiría estudios de correlación entre todos los pares de variables y no sólo los que parecen más lógicos, en este estudio se han priorizado pares como la circunferencia de cintura y la de hombros en pos de otros como la circunferencia de tobillo - ancho biiliaco. También modelos de regresión lineal y múltiple más completos, análisis de interacciones entre medidas centrales y periféricas, y profundizar mucho más con estudios de Análisis de Componentes Principales (PCA) para profundizar en líneas de estudio con más relevancia.
 
 También es importante incorporar un marco teórico previo sobre dimorfismo sexual, patrones biológicos de acumulación de grasa y crecimiento permitiría desarrollar hipótesis más robustas y contextualizadas.
 
+###### ¿Faltan datos para obtener otro tipo de información?
+Sí, sería necesario disponer de información adicional para ampliar el alcance de las conclusiones. En particular, medidas directas de composición corporal, como porcentaje de grasa, masa muscular o distribución de grasa visceral, permitirían interpretar de forma más precisa variables como el peso o el índice de masa corporal (IMC). Asimismo, variables relacionadas con hábitos de vida (actividad física, dieta) o factores clínicos enriquecerían el análisis y permitirían contextualizar mejor los patrones antropométricos observados.
 
-dfasdfa
+###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
+Las conclusiones obtenidas pueden servir como base para la toma de decisiones en contextos descriptivos y exploratorios, como estudios poblacionales, diseño ergonómico o análisis antropométricos generales. No obstante, deben interpretarse con cautela y no como criterios clínicos o diagnósticos, ya que el estudio no incluye información médica ni medidas directas de salud. En este sentido, los resultados son útiles para orientar hipótesis o estudios posteriores más específicos.
+
+###### Trabajo y calidad del informe
+El trabajo en grupo ha permitido integrar de manera coherente los distintos conceptos trabajados a lo largo de la asignatura, combinando análisis exploratorio, inferencia estadística, simulación, aprendizaje automático y visualización interactiva. La colaboración ha facilitado la división de tareas y la revisión cruzada del código y del contenido, mejorando la claridad y consistencia del informe final. El resultado es un análisis estructurado, reproducible y alineado con los objetivos planteados en la práctica.
