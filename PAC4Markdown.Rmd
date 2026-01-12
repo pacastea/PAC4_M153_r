@@ -1,9 +1,16 @@
 ---
 title: "PEC4"
-author: "Andrea C., Diana S."
-date: "2026-01-10"
+author: "Andrea Castellano Palacios, Diana Saralegui Sanchez"
+date: "2026-01-01"
 output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+```
 
 # Sección 1. Contexto y objetivo del estudio. Datos (1 punto)
 **Debéis buscar un conjunto de datos relacionado con la Bioestadística y la Bioinformática, basándoos en los intereses profesionales o las preferencias del grupo.**
@@ -226,7 +233,7 @@ La línea discontínua marca el umbral clásico del sobrepeso
 
 **b) Basándoos en los conceptos del LAB4 y la PEC2, plantead un mínimo de tres enunciados que respondan a una cuestión de probabilidad.**
 
-##### 1. ¿Cuál es la probabilidad de que un individuo del conjunto de datos tenga un IMC superior a la media?
+#### 1. ¿Cuál es la probabilidad de que un individuo del conjunto de datos tenga un IMC superior a la media?
 
 Identificamos la media del IM de manera matemática por precisión, aunque tenemos por el summary del apartado anterior que ronda (23.46) y calculamos la proporción de datos por encima de esta media (IMC > media / total = media), correspondiendo al cálculo de la probabilidad empírica. Lo multiplicamos por 100 y redondeamos a dos decimales para obtener un porcentaje regular y obtenemos que:
 
@@ -238,7 +245,7 @@ round((p1*100), digits = 2)
 
 La probabilidad de que un individuo observado presente un IMC superior a la media es del 44.58%.
 
-##### 2. Para estudios de sobrepeso, ¿Cuál es la probabilidad de que un hombre presente un IMC superior a 25? ¿Y una mujer?
+#### 2. Para estudios de sobrepeso, ¿Cuál es la probabilidad de que un hombre presente un IMC superior a 25? ¿Y una mujer?
 
 ```{r 3cuestion2}
 p2_hombres <- mean(BODYDATA$IMC[BODYDATA$gender == 1] > 25)
@@ -295,7 +302,7 @@ Aunque es importante apuntar que tener un IMC alto no equivale necesariamente a 
 
 Medidas como plicometrías o bioimpedancias (Básculas que miden el porcentaje de grasa corporal) contextualizarían este marco de estudio, o en su falta, hacer un estudio de correlación entre el IMC y la circunferencia de cintura, siendo este último un indicador de la grasa abdominal.
 
-##### 3. ¿Cuál es la probabilidad de que un hombre mida más de 185 cm, asumiendo que la altura sigue aproximadamente una distribución normal?
+#### 3. ¿Cuál es la probabilidad de que un hombre mida más de 185 cm, asumiendo que la altura sigue aproximadamente una distribución normal?
 
 Aproximamos a la normal a partir de la estadística descriptiva del apartado 3.1 donde obtenemos que la media es de 171.1 cm (recortada 170.93 cm) y la mediana 170.3, lo que indica una simetría alrededor de la media. La desviación estándar de 9.41 cm y la desviación absoluta mediana de 10.67 cm muestran una dispersión moderada con un rango que va desde los 147.2 a los 198.1 centímetros de altura. 
 La distribución de los datos presenta una asimetría leve (skew de 0.15) y un aplanamiento de la curva respecto a la normal existente pero moderado (kurtosis -0.46), lo que respalda la simetría de la curva y sus colas.
@@ -389,7 +396,7 @@ Explorar agrupamientos con las variables que tenemos a mano nos hace considerar 
 Partiendo de aquí, podemos utilizar un algoritmo k-means para dividir la muestra en clusters según perfiles corporales, usando medidas representativas tanto del marco óseo como del patrón de acumulación de grasa (girth) para ello, y compararlo con algún gráfico descriptivo realizado en la Sección 3.1 para detectar algún patrón. También podríamos servirnos del aprendizaje supervisado para testar la pregunta número 4 propuesta al inicio de la PAC, usando una stepAIC para detectar qué medidas son las que aportan menos información al modelo.
 
 
-##### k-means. Aprendizaje no supervisado.
+#### k-means. Aprendizaje no supervisado.
 
 Primero empezaremos con el k-means, y como paso previo al algoritmo haremos elbow-method a través del decrecimiento de la suma de cuadrados intra-cluster (WSS) para determinar una k adecuada, que es el punto en el que la pendiente de reducción del WSS cambia, creando un codo en la gráfica.
 
@@ -465,7 +472,7 @@ Se adjuntan figuras 4 y 5 con marcas para señalar las subdivisiones.
 
 ![FIGURA 5](datos/c8.jpg)
 
-##### stepAIC. Aprendizaje supervisado.
+#### stepAIC. Aprendizaje supervisado.
 
 Esta parte es simplemente para poder descartar o no medidas más alejadas del core con respaldo estadístico. Este método forma parte del aprendizaje supervisado.
 
@@ -659,23 +666,23 @@ En otro orden de cuestiones, valorad también el trabajo en grupo y la calidad d
 ### Conclusiones finales.
 
 Con respecto a nuestras preguntas iniciales, acerca del dimorfismo sexual, hemos podido identificar ciertos patrones y diferencias en las medidas antropométricas de hombres y mujeres con respecto al peso. Esto se ve muy bien gracias al visor de gráficos de la aplicación shiny realizada en la sección 5. 
-###### Relación de la circunferencia de muslo con el peso
+#### Relación de la circunferencia de muslo con el peso
 
 ![Figura 6](datos/thigh_weight.jpg)
 
 Vemos que para el mismo peso, las mujeres tienden a muslos más anchos. Esto es consistente con los patrones biológicos de acumulación de grasa en las mujeres en el tren inferior (caderas y muslos).
 
-###### Relación de la circunferencia de cadera con el peso
+#### Relación de la circunferencia de cadera con el peso
 
 ![Figura 7](datos/hip_weight.jpg)
 Mismamente, vemos que para el mismo peso, las mujeres tienden a caderas más anchas. De nuevo, consistente con patrones biológicos de acumulación de grasa.
 
-###### Relación de la circunferencia de hombros con el peso
+#### Relación de la circunferencia de hombros con el peso
 
 ![Figura 8](datos/shoulder_weight.jpg)
 Vemos que de manera global, las mujeres tienden a tener un marco de tren superior inferior en volumen a los hombres alrededor de los hombros, encontrándose que en pesos entre 50 y 80 se encuentran datos de hombres y mujeres pero los hombres presentan mayor volumen que las mujeres. Esto responde al patrón biológico.
 
-###### Relación de la circunferencia de cintura con el peso
+#### Relación de la circunferencia de cintura con el peso
 
 Otro ejemplo, encontramos la relación de la circunferencia de cintura con el peso. Encontramos que la cintura parece crecer de manera proporcional con el peso, sin un patrón muy marcado por sexo más que los hombres tienden a presentar más tamaño.
 
@@ -685,7 +692,7 @@ Otro ejemplo, encontramos la relación de la circunferencia de cintura con el pe
 Pero si comparamos las medidas de hombros con las medidas de cintura, detectamos que al mismo marco de hombros (misma medida), las mujeres parecen presentar menores cinturas que los hombres. Esto podría significar que los hombres presentan unos marcos más cuadrados - el crecimiento hombros-cintura es proporcional en aumentar el peso - que las mujeres. 
 
 ![Figura 10](datos/shoulder_waist.jpg)
-###### Pregunta 2 y Pregunta 3.
+#### Pregunta 2 y Pregunta 3.
 
 Hemos encontrado gracias al método de clustering k-means, que las medidas de circunferencia de cadera, pecho, cintura, hombros y muslos en función del peso ayudan a agrupar muy bien en 4 clústers población femenina y masculina, siendo 2 clusters en su mayoría femeninos y los otros 2 masculinos. 
 
@@ -699,36 +706,36 @@ Esto podemos verlo en las figuras 3, 5 y 10, y en cómo podemos encontrar estos 
 
 ![Figura 10](datos/shoulder_waist.jpg)
 
-###### Pregunta 4. 
+#### Pregunta 4. 
 
 Gracias al stepAIC pudimos encontrar qué variables no mejoraban el modelo, y estas corresponden en su gran mayoría a medidas periféricas alejadas del core (tobillo, muñeca y rodilla) y algunas otras más céntricas como bicep (que todavía corresponde a extremidades), lo que se ajusta a nuestra presuposición.
 
-###### Sobre el modelo de simulación.
+#### Sobre el modelo de simulación.
 La simulación del peso basada en un modelo de regresión múltiple utilizando circunferencia de cintura, pecho y cadera genera valores plausibles y coherentes con la muestra real. La media y la mediana del peso simulado son muy próximas a las observadas en los datos originales, lo que indica que el modelo captura adecuadamente la relación central entre estas medidas y el peso corporal. La menor dispersión observada en la simulación se explica por la asunción de normalidad y por el uso de un conjunto reducido de predictores, lo que suaviza la presencia de valores extremos.
 
-###### Sobre el análisis de clústeres.
+#### Sobre el análisis de clústeres.
 El análisis mediante k-means revela agrupamientos morfológicos coherentes cuando se utilizan medidas centrales del cuerpo previamente escaladas. La elección de k=2 permite identificar dos grandes grupos compatibles con dimorfismo sexual, mientras que k=4 ofrece una caracterización más detallada de subtipos corporales dentro de cada sexo. Estos resultados refuerzan la idea de que las medidas del core corporal son determinantes en la diferenciación de perfiles antropométricos.
 
-###### Alcance y limitaciones del estudio.
+#### Alcance y limitaciones del estudio.
 Aunque los resultados obtenidos son consistentes con patrones biológicos conocidos, deben interpretarse con cautela. El uso de técnicas no supervisadas como k-means permite identificar agrupamientos, pero no establece relaciones causales. Asimismo, la ausencia de medidas directas de composición corporal limita la interpretación del peso y del IMC en términos de grasa corporal frente a masa muscular
 
 En conjunto, este estudio demuestra cómo la combinación de análisis exploratorio, inferencia básica, simulación y aprendizaje automático permite extraer información relevante de datos antropométricos y formular hipótesis coherentes sobre patrones corporales y dimorfismo sexual.
 
-###### ¿Sería necesario realizar un análisis más avanzado?
+#### ¿Sería necesario realizar un análisis más avanzado?
 Sí. Para que los hallazgos sobre proporciones corporales sean estadísticamente significativos deberían explorarse todas las relaciones posibles entre las medidas recogidas en BODYDATA, no sólo los valores individuales o algunos pares. Esto incluiría estudios de correlación entre todos los pares de variables y no sólo los que parecen más lógicos, en este estudio se han priorizado pares como la circunferencia de cintura y la de hombros en pos de otros como la circunferencia de tobillo - ancho biiliaco. También modelos de regresión lineal y múltiple más completos, análisis de interacciones entre medidas centrales y periféricas, y profundizar mucho más con estudios de Análisis de Componentes Principales (PCA) para profundizar en líneas de estudio con más relevancia.
 
 También es importante incorporar un marco teórico previo sobre dimorfismo sexual, patrones biológicos de acumulación de grasa y crecimiento permitiría desarrollar hipótesis más robustas y contextualizadas.
 
-###### ¿Faltan datos para obtener otro tipo de información?
+#### ¿Faltan datos para obtener otro tipo de información?
 Sí, sería necesario disponer de información adicional para ampliar el alcance de las conclusiones. En particular, medidas directas de composición corporal, como porcentaje de grasa, masa muscular o distribución de grasa visceral, permitirían interpretar de forma más precisa variables como el peso o el índice de masa corporal (IMC). Asimismo, variables relacionadas con hábitos de vida (actividad física, dieta) o factores clínicos enriquecerían el análisis y permitirían contextualizar mejor los patrones antropométricos observados.
 
-###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
+#### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
 Las conclusiones obtenidas pueden servir como base para la toma de decisiones en contextos descriptivos y exploratorios, como estudios poblacionales, diseño ergonómico o análisis antropométricos generales. No obstante, deben interpretarse con cautela y no como criterios clínicos o diagnósticos, ya que el estudio no incluye información médica ni medidas directas de salud. En este sentido, los resultados son útiles para orientar hipótesis o estudios posteriores más específicos.
 
-###### Trabajo y calidad del informe
+#### Trabajo y calidad del informe
 El trabajo en grupo ha permitido integrar de manera coherente los distintos conceptos trabajados a lo largo de la asignatura, combinando análisis exploratorio, inferencia estadística, simulación, aprendizaje automático y visualización interactiva. La colaboración ha facilitado la división de tareas y la revisión cruzada del código y del contenido, mejorando la claridad y consistencia del informe final. El resultado es un análisis estructurado, reproducible y alineado con los objetivos planteados en la práctica.
 
-###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
+#### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
 Creemos que la conclusión más robusta que hemos sacado de este estudio es que efectivamente en esta muestra existe un dimorfismo sexual y por lo tanto podríamos partir de aquí para hacer estudios en las poblaciones por separado.
 
 
