@@ -723,8 +723,26 @@ También es importante incorporar un marco teórico previo sobre dimorfismo sexu
 ###### ¿Faltan datos para obtener otro tipo de información?
 Sí, sería necesario disponer de información adicional para ampliar el alcance de las conclusiones. En particular, medidas directas de composición corporal, como porcentaje de grasa, masa muscular o distribución de grasa visceral, permitirían interpretar de forma más precisa variables como el peso o el índice de masa corporal (IMC). Asimismo, variables relacionadas con hábitos de vida (actividad física, dieta) o factores clínicos enriquecerían el análisis y permitirían contextualizar mejor los patrones antropométricos observados.
 
+<<<<<<< HEAD
 ###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
 Las conclusiones obtenidas pueden servir como base para la toma de decisiones en contextos descriptivos y exploratorios, como estudios poblacionales, diseño ergonómico o análisis antropométricos generales. No obstante, deben interpretarse con cautela y no como criterios clínicos o diagnósticos, ya que el estudio no incluye información médica ni medidas directas de salud. En este sentido, los resultados son útiles para orientar hipótesis o estudios posteriores más específicos.
 
 ###### Trabajo y calidad del informe
 El trabajo en grupo ha permitido integrar de manera coherente los distintos conceptos trabajados a lo largo de la asignatura, combinando análisis exploratorio, inferencia estadística, simulación, aprendizaje automático y visualización interactiva. La colaboración ha facilitado la división de tareas y la revisión cruzada del código y del contenido, mejorando la claridad y consistencia del informe final. El resultado es un análisis estructurado, reproducible y alineado con los objetivos planteados en la práctica.
+=======
+###### ¿Faltan datos para obtener otro tipo de información como...?
+
+Nos hemos encontrado durante la realización del trabajo que al considerar el IMC, carecemos de información sobre el porcentaje de grasa corporal de los individuos, lo cual ayuda a contextualizar mucho esta medida. El IMC no diferencia de dónde procede el peso del individuo: sea óseo, muscular, contenido de agua o grasa, todo cuenta como peso que se reparte según la altura. Esto lo convierte en un dato ambiguo que no nos sirve para decretar si un individuo tiene sobrepeso o hipertrofia. 
+También nos podría ser útil una medida de densidad ósea, sobre todo para considerarlo a la vez que la edad y como influye sobre el peso de los individuos.
+Por engrosar el contexto de la población, medidas sobre la procedencia racial, actividad física semanal, podrían ayudar no en el estudio de las proporciones, pero sí en el marco biológico de los individuos.
+
+
+###### ¿Se puede utilizar alguna de las conclusiones para tomar algún tipo de decisiones?
+
+Creemos que la conclusión más robusta que hemos sacado de este estudio es que efectivamente en esta muestra existe un dimorfismo sexual y por lo tanto podríamos partir de aquí para hacer estudios en las poblaciones por separado.
+
+##### En otro orden de cuestiones, valorad también el trabajo en grupo y la calidad del informe de análisis de datos generado.
+
+
+
+>>>>>>> d999ae7b3c1f77b3b8d3ca3827d0bcd6d1acabae
